@@ -7,25 +7,24 @@ from extraction import NMF
 
 
 class BrainBlast:
-    def __init__(self, folder, dataset, submission, submission_path):
-        self.folder = folder
-        self.dataset = dataset
-        self.submission = submission
-        self.submission_path = submission_path
+    def __init__(self, f, d, s):
+        self.folder = f
+        self.data = d
+        self.submission = s
 
-    def learn_dataset(self):
-        path = self.folder_path + self.dataset
+    def learn_data(self):
+        path = self.folder + self.data
         data = td.images.fromtif(path + '/images', ext='tiff')
         algorithm = NMF(k=11, percentile=99, max_iter=50, overlap=0.1)
         model = algorithm.fit(data, chunk_size=(50, 50), padding=(25, 25))
         merged = model.merge(0.1)
         regions = [{'coordinates': region.coordinates.tolist()} for region in merged.regions]
-        result = {'dataset': self.dataset, 'regions': regions}
+        result = {'dataset': self.data, 'regions': regions}
         self.submission.append(result)
 
     def save_submission(self):
-        with open('submission.json', 'w') as f:
-            f.write(json.dumps(submission))
+        with open('submission.json', 'w') as sf:
+            sf.write(json.dumps(submission))
 
 
 if __name__ is "__main__":
@@ -46,4 +45,4 @@ if __name__ is "__main__":
     bb = BrainBlast(folder_path, files, submission)
 
     for f in files:
-        bb.learn_dataset(f, submission)
+        bb.learn_data()
