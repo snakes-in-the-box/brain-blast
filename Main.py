@@ -5,11 +5,13 @@ import json
 import thunder as td
 from extraction import NMF
 
+folder_path = '/media/brad/disk2/nf_data_test/neurofinder.'
+
 
 def learn_dataset(dataset, submission):
-    path = '/media/brad/disk2/nf_data_test/neurofinder.' + dataset
+    path = folder_path + dataset
     data = td.images.fromtif(path + '/images', ext='tiff')
-    algorithm = NMF(k=10, percentile=99, max_iter=50, overlap=0.1)
+    algorithm = NMF(k=11, percentile=99, max_iter=50, overlap=0.1)
     model = algorithm.fit(data, chunk_size=(50, 50), padding=(25, 25))
     merged = model.merge(0.1)
     regions = [{'coordinates': region.coordinates.tolist()} for region in merged.regions]
