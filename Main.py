@@ -13,21 +13,23 @@ class BrainBlast:
         self.submission = s
 
     def learn_data(self):
-        path = self.folder + self.data
-        data = td.images.fromtif(path + '/images', ext='tiff')
-        algorithm = NMF(k=11, percentile=99, max_iter=50, overlap=0.1)
-        model = algorithm.fit(data, chunk_size=(50, 50), padding=(25, 25))
-        merged = model.merge(0.1)
-        regions = [{'coordinates': region.coordinates.tolist()} for region in merged.regions]
-        result = {'dataset': self.data, 'regions': regions}
-        self.submission.append(result)
+        for d in self.data:
+            path = self.folder + d
+            print("Analyzing on ", path)
+            data = td.images.fromtif(path + '/images', ext='tiff')
+            algorithm = NMF(k=10, percentile=99, max_iter=50, overlap=0.1)
+            model = algorithm.fit(data, chunk_size=(50, 50), padding=(25, 25))
+            merged = model.merge(0.1)
+            regions = [{'coordinates': region.coordinates.tolist()} for region in merged.regions]
+            result = {'dataset': self.data, 'regions': regions}
+            self.submission.append(result)
 
     def save_submission(self):
         with open('submission.json', 'w') as sf:
             sf.write(json.dumps(submission))
 
 
-if __name__ is "__main__":
+if __name__ == "__main__":
 
     folder_path = '/media/brad/disk2/nf_data_test/neurofinder.'
     files = [
@@ -42,7 +44,7 @@ if __name__ is "__main__":
         '04.01.test'
     ]
     submission = []
-    bb = BrainBlast(folder_path, files, submission)
 
-    for f in files:
-        bb.learn_data()
+    bb = BrainBlast(folder_path, files, submission)
+    bb.learn_data()
+    bb.save_submission()
