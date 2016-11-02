@@ -26,7 +26,7 @@ class BrainBlast:
 
     def save_submission(self):
         with open('submission.json', 'w') as sf:
-            sf.write(json.dumps(submission))
+            sf.write(json.dumps(self.submission))
 
 
 if __name__ == "__main__":
